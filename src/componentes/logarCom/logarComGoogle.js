@@ -1,6 +1,9 @@
-import React, { useEffect } from 'react';
-import { View, Button, Alert, TouchableOpacity } from 'react-native';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import React, {useEffect} from 'react';
+import {View, Button, Alert, TouchableOpacity} from 'react-native';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import Ionicons from '../../constants/Ionicons';
 import Icone from 'react-native-vector-icons/Ionicons';
 import COR from '../../constants/cor';
@@ -8,7 +11,8 @@ import COR from '../../constants/cor';
 export default function GoogleLogin() {
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: '1012671298390-gg9undi9l4n8co9nk1f6e085tlfh3rea.apps.googleusercontent.com',
+      webClientId:
+        '1012671298390-gg9undi9l4n8co9nk1f6e085tlfh3rea.apps.googleusercontent.com',
       offlineAccess: false,
     });
   }, []);
@@ -19,14 +23,17 @@ export default function GoogleLogin() {
       const userInfo = await GoogleSignin.signIn();
       const idToken = userInfo.idToken;
 
-      const response = await fetch('https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/loginComGoogle', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: idToken }),
-      });
+      const response = await fetch(
+        'https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/loginComGoogle',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({token: idToken}),
+        },
+      );
 
       const data = await response.json();
-        console.log(data);
+      console.log(data);
       if (data.token) {
         Alert.alert('Login sucesso', 'Token JWT: ' + data.token);
         // Salvar token e navegar
@@ -48,8 +55,12 @@ export default function GoogleLogin() {
   }
 
   return (
-    <TouchableOpacity onPress={handleGoogleLogin}>
-     <Icone name={Ionicons.iconeGoogle} size={35} color={COR.vermelhoClaro}/>
+    <TouchableOpacity
+      onPress={handleGoogleLogin}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={'Logar com Google'}>
+      <Icone name={Ionicons.iconeGoogle} size={35} color={COR.vermelhoClaro} />
     </TouchableOpacity>
   );
 }

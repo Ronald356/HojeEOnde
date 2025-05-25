@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   Modal,
   View,
@@ -14,23 +14,24 @@ import BotaoApp from '../botao';
 import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
 import BotaoBordaColorida from '../botaoApp/botaoBordaColorida';
 import Titulo from '../textTitulo';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Ionicons from '../../constants/Ionicons';
 import Icone from 'react-native-vector-icons/Ionicons';
 import COR from '../../constants/cor';
 import GoogleLogin from '../logarCom/logarComGoogle';
+import FacebookLogin from '../logarCom/logarComFacebook';
+import AcessibilidadeFoco from '../acessibilidade/acessibilidadeInfo';
 
+const {height} = Dimensions.get('window');
 
-const { height } = Dimensions.get('window');
-
-export default function ModalAnimado({ visible, onClose }) {
-  const slideAnim = useRef(new Animated.Value(height)).current; 
+export default function ModalAnimado({visible, onClose}) {
+  const slideAnim = useRef(new Animated.Value(height)).current;
   const navigation = useNavigation();
 
   useEffect(() => {
     if (visible) {
       Animated.timing(slideAnim, {
-        toValue: height * 0.7, 
+        toValue: height * 0.7,
         duration: 300,
         useNativeDriver: true,
       }).start();
@@ -48,43 +49,43 @@ export default function ModalAnimado({ visible, onClose }) {
   };
 
   return (
-    <View >
-      <ImagemApp  nomeImagem="logostory" style={{width: '100%', height: '100%', bottom: 50}}/>
-   <Modal
-  transparent
-  visible={true}
-  animationType="none"
-  onRequestClose={onClose}
->
-  <Pressable style={styles.overlay} onPress={onClose} />
+    <View>
+      <ImagemApp
+        nomeImagem="logostory"
+        style={{width: '100%', height: '100%', bottom: 50}}
+      />
+      <Modal
+        transparent
+        visible={true}
+        animationType="none"
+        onRequestClose={onClose}>
+        <Pressable style={styles.overlay} onPress={onClose} />
 
-  <Animated.View
-    style={[
-      styles.container,
-      {
-        transform: [{ translateY: slideAnim }],
-      },
-    ]}
-  >
-    <View style={{marginTop: 10}}>
-      <BotaoFundoColorido text={"Logar na minha conta"} onPress={criarConta} />
-        <BotaoBordaColorida text={"Criar conta"} onPress={criarConta} />
-    </View>
+        <Animated.View
+          style={[
+            styles.container,
+            {
+              transform: [{translateY: slideAnim}],
+            },
+          ]}>
+          <View style={{marginTop: 10}}>
+            <AcessibilidadeFoco mensagem="Bem-vindo ao Hoje é Onde! Aqui você pode entrar com sua conta existente ou criar uma nova conta para começar a usar o aplicativo." />
 
-    <Text style={styles.subtitle}>Acessar com</Text>
+            <BotaoFundoColorido
+              text={'Logar na minha conta'}
+              onPress={criarConta}
+            />
+            <BotaoBordaColorida text={'Criar conta'} onPress={criarConta} />
+          </View>
 
-    <View style={styles.socialButtonsContainer}>
-      <GoogleLogin />
-      <TouchableOpacity
-        style={{ marginLeft : 15 }}
-        onPress={() => alert('Login com Facebook')}
-      >
-        <Icone name={Ionicons.iconeFacebook} size={35} color={COR.azulMedio} style={styles.icone} />
-      </TouchableOpacity>
-    </View>
-  </Animated.View>
-</Modal>
+          <Text style={styles.subtitle}>Acessar com</Text>
 
+          <View style={styles.socialButtonsContainer}>
+            <GoogleLogin />
+            <FacebookLogin />
+          </View>
+        </Animated.View>
+      </Modal>
     </View>
   );
 }

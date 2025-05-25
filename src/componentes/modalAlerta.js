@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {Modal, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import COR from '../constants/cor';
 
 const ModalPersonalizado = ({
@@ -17,8 +17,7 @@ const ModalPersonalizado = ({
       transparent
       animationType="fade"
       visible={visivel}
-      onRequestClose={aoFechar}
-    >
+      onRequestClose={aoFechar}>
       <View style={styles.fundo}>
         <View style={styles.modalContainer}>
           <Text style={styles.titulo}>{titulo}</Text>
@@ -27,14 +26,12 @@ const ModalPersonalizado = ({
           <View style={styles.botoesContainer}>
             <TouchableOpacity
               style={[styles.botao, styles.botaoCancelar]}
-              onPress={aoCancelar || aoFechar}
-            >
+              onPress={aoCancelar || aoFechar}>
               <Text style={styles.textoBotao}>{textoCancelar}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.botao, styles.botaoConfirmar]}
-              onPress={aoConfirmar}
-            >
+              onPress={aoConfirmar}>
               <Text style={styles.textoBotao}>{textoConfirmar}</Text>
             </TouchableOpacity>
           </View>

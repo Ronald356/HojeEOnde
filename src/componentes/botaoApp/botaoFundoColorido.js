@@ -1,12 +1,24 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 import FONTES from '../../constants/fonts';
 import COR from '../../constants/cor';
 
-
-export default function BotaoFundoColorido({ text, onPress, style, textStyle }) {
+export default function BotaoFundoColorido({
+  text,
+  onPress,
+  style,
+  textStyle,
+  accessibilityLabel,
+  accessibilityHint,
+}) {
   return (
-    <TouchableOpacity style={[styles.botao, style]} onPress={onPress}>
+    <TouchableOpacity
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel || text}
+      accessibilityHint={accessibilityHint}
+      style={[styles.botao, style]}
+      onPress={onPress}>
       <Text style={[styles.textoBotao, textStyle]}>{text}</Text>
     </TouchableOpacity>
   );
@@ -14,7 +26,7 @@ export default function BotaoFundoColorido({ text, onPress, style, textStyle }) 
 
 const styles = StyleSheet.create({
   botao: {
-    backgroundColor: COR.verdeLogo, 
+    backgroundColor: COR.verdeLogo,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,

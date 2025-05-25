@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Button} from 'react-native';
 import ComponenteTextInput from '../textInput';
 
-const TelaSenha = ({ route }) => {
-  const { email } = route.params;
+const TelaSenha = ({route}) => {
+  const {email} = route.params;
   const [senha, setSenha] = useState('');
 
   const handleCriarConta = () => {
@@ -16,7 +16,7 @@ const TelaSenha = ({ route }) => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Crie uma senha para sua conta</Text>
       <ComponenteTextInput
         tipo="senha"

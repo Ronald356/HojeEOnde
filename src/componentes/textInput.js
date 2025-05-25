@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import Icone from 'react-native-vector-icons/Ionicons';
 import DIMENSOES from '../constants/dimensoes';
 import COR from '../constants/cor';
@@ -40,29 +46,65 @@ const ComponenteTextInput = ({
 
   const renderizarIconeEsquerda = () => {
     if (iconeEsquerda) {
-      return <Icone name={iconeEsquerda} size={20} color={COR.cinza} style={styles.icone} />;
+      return (
+        <Icone
+          name={iconeEsquerda}
+          size={20}
+          color={COR.cinza}
+          style={styles.icone}
+        />
+      );
     }
 
     switch (tipo) {
-      case 'pesquisa': return <Icone name="search" size={20} color={COR.cinza} style={styles.icone} />;
-      case 'email': return <Icone name={Ionicons.iconeEmail} size={20} color={COR.cinza} style={styles.icone} />;
-      case 'senha': return <Icone name="lock" size={20} color={COR.cinza} style={styles.icone} />;
-      default: return null;
+      case 'pesquisa':
+        return (
+          <Icone
+            name="search"
+            size={20}
+            color={COR.cinza}
+            style={styles.icone}
+          />
+        );
+      case 'email':
+        return (
+          <Icone
+            name={Ionicons.iconeEmail}
+            size={20}
+            color={COR.cinza}
+            style={styles.icone}
+          />
+        );
+      case 'senha':
+        return (
+          <Icone name="lock" size={20} color={COR.cinza} style={styles.icone} />
+        );
+      default:
+        return null;
     }
   };
 
   const renderizarIconeDireita = () => {
     if (iconeDireita) {
       return (
-        <TouchableOpacity onPress={aoPressionarIcone}>
-          <Icone name={iconeDireita} size={20} color={COR.cinza} style={styles.icone} />
+        <TouchableOpacity
+          onPress={aoPressionarIcone}
+          testID="botao-icone-direita">
+          <Icone
+            name={iconeDireita}
+            size={20}
+            color={COR.cinza}
+            style={styles.icone}
+          />
         </TouchableOpacity>
       );
     }
 
     if (tipo === 'senha') {
       return (
-        <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)}>
+        <TouchableOpacity
+          onPress={() => setSenhaVisivel(!senhaVisivel)}
+          testID="botao-olho">
           <Icone
             name={senhaVisivel ? 'eye-off' : 'eye'}
             size={20}
@@ -77,18 +119,21 @@ const ComponenteTextInput = ({
   };
 
   return (
-    <View style={[
-      styles.container,
-      { width: DIMENSOES.larguraTela * larguraPorcentagem },
-      estiloContainer
-    ]}>
+    <View
+      style={[
+        styles.container,
+        {width: DIMENSOES.larguraTela * larguraPorcentagem},
+        estiloContainer,
+      ]}>
       {titulo && <Text style={[styles.titulo, estiloTitulo]}>{titulo}</Text>}
       <View style={styles.containerInput}>
         {renderizarIconeEsquerda()}
         <TextInput
           placeholder={placeholder}
           style={[styles.input, estiloInput]}
-          secureTextEntry={mostrarSenhaPadrao ?? (tipo === 'senha' && !senhaVisivel)}
+          secureTextEntry={
+            mostrarSenhaPadrao ?? (tipo === 'senha' && !senhaVisivel)
+          }
           onChangeText={aoAlterarTexto}
           onFocus={aoFocar}
           onBlur={aoPerderFoco}

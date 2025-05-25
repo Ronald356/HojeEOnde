@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -15,49 +15,57 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ComponenteTextInput from '../textInput';
 import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
 import ModalPersonalizado from '../modalAlerta';
+import AcessibilidadeFoco from '../acessibilidade/acessibilidadeInfo';
 
-const TelaEmail = ({ navigation }) => {
+const TelaEmail = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [alerta, setAlerta] = useState(false);
-  
+
   function showToast(message) {
-    ToastAndroid.showWithGravity(message, ToastAndroid.SHORT, ToastAndroid.CENTER);
+    ToastAndroid.showWithGravity(
+      message,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
   }
 
-
-const handleProximo = () => {
-  if (!email) {
-    showToast('Informe um email válido.');
-    return;
-  }
-
-  // Dispara a requisição, mas não espera
-  fetch('https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/enviar-codigo', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email }),
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Erro ao enviar o código. Verifique o e-mail e tente novamente.');
+  const handleProximo = () => {
+    if (!email) {
+      showToast('Informe um email válido.');
+      return;
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log('Resposta da API:', data);
-    showToast('Código de verificação enviado para o e-mail!');
-  })
-  .catch(error => {
-    console.error('Erro ao enviar código:', error);
-    showToast(error.message || 'Erro inesperado. Tente novamente.');
-  });
 
-  // Navega imediatamente, sem esperar a resposta
-  navigation.navigate('Verificacao', { email });
-};
+    // Dispara a requisição, mas não espera
+    fetch(
+      'https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/enviar-codigo',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email}),
+      },
+    )
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(
+            'Erro ao enviar o código. Verifique o e-mail e tente novamente.',
+          );
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Resposta da API:', data);
+        showToast('Código de verificação enviado para o e-mail!');
+      })
+      .catch(error => {
+        console.error('Erro ao enviar código:', error);
+        showToast(error.message || 'Erro inesperado. Tente novamente.');
+      });
 
+    // Navega imediatamente, sem esperar a resposta
+    navigation.navigate('Verificacao', {email});
+  };
 
   const handleVoltar = () => {
     navigation.goBack();
@@ -66,9 +74,8 @@ const handleProximo = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-    >
+      style={{flex: 1}}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <TouchableOpacity style={styles.voltar} onPress={handleVoltar}>
@@ -76,9 +83,10 @@ const handleProximo = () => {
           </TouchableOpacity>
 
           <View style={styles.conteudo}>
+            <AcessibilidadeFoco mensagem="Tela de login. Informe seu e-mail para continuar." />
+
             <Text style={styles.titulo}>Qual o seu e-mail?</Text>
 
- 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>E-mail</Text>
               <ComponenteTextInput
@@ -88,7 +96,7 @@ const handleProximo = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
-                estiloInput={{ width: '1000%', border: 10 }}
+                estiloInput={{width: '1000%', border: 10}}
                 onChangeText={setEmail}
               />
             </View>
@@ -96,18 +104,15 @@ const handleProximo = () => {
 
           <View style={styles.footer}>
             <Text style={styles.observacao}>
-              O app poderá enviar comunicações neste e-mail, pra cancelar a inscrição acesse "Configurações".
+              O app poderá enviar comunicações neste e-mail, pra cancelar a
+              inscrição acesse "Configurações".
             </Text>
-            <BotaoFundoColorido
-            text={"Continuar"}
-            onPress={handleProximo}
-            />
-     
+            <BotaoFundoColorido text={'Continuar'} onPress={handleProximo} />
           </View>
         </View>
       </TouchableWithoutFeedback>
 
-        {alerta && (
+      {alerta && (
         <ModalPersonalizado
           visivel={!!alerta}
           titulo={alerta.titulo}
@@ -119,7 +124,6 @@ const handleProximo = () => {
           aoCancelar={alerta.aoCancelar}
         />
       )}
-
     </KeyboardAvoidingView>
   );
 };
@@ -136,7 +140,6 @@ const styles = StyleSheet.create({
   },
   conteudo: {
     flex: 1,
-
   },
   titulo: {
     fontSize: 24,
@@ -155,7 +158,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
-
 });
 
 export default TelaEmail;

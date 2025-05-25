@@ -1,12 +1,24 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 import FONTES from '../../constants/fonts';
 import COR from '../../constants/cor';
 
-
-export default function BotaoBordaColorida({ text, onPress, style, textStyle }) {
+export default function BotaoBordaColorida({
+  text,
+  onPress,
+  style,
+  textStyle,
+  accessibilityLabel,
+  accessibilityHint,
+}) {
   return (
-    <TouchableOpacity style={[styles.botao, style]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.botao, style]}
+      onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel || text}
+      accessibilityHint={accessibilityHint}>
       <Text style={[styles.textoBotao, textStyle]}>{text}</Text>
     </TouchableOpacity>
   );
@@ -24,7 +36,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   textoBotao: {
-    color: COR.verdeLogo, 
+    color: COR.verdeLogo,
     fontSize: 16,
     fontWeight: FONTES.bold,
   },

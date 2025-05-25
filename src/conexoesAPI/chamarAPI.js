@@ -1,8 +1,18 @@
-import { ToastAndroid } from 'react-native';
+import {ToastAndroid} from 'react-native';
 
-async function validarAPI({ url, body, onSuccessNavigate, navigation, setAlerta }) {
+async function validarAPI({
+  url,
+  body,
+  onSuccessNavigate,
+  navigation,
+  setAlerta,
+}) {
   function showToast(message) {
-    ToastAndroid.showWithGravity(message, ToastAndroid.SHORT, ToastAndroid.CENTER);
+    ToastAndroid.showWithGravity(
+      message,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER,
+    );
   }
 
   if (!setAlerta) {
@@ -12,7 +22,7 @@ async function validarAPI({ url, body, onSuccessNavigate, navigation, setAlerta 
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body),
     });
 
@@ -38,7 +48,6 @@ async function validarAPI({ url, body, onSuccessNavigate, navigation, setAlerta 
     }
 
     return true;
-
   } catch (error) {
     console.error('Erro na validação:', error);
     if (setAlerta) {
@@ -56,4 +65,4 @@ async function validarAPI({ url, body, onSuccessNavigate, navigation, setAlerta 
   }
 }
 
-export { validarAPI };
+export {validarAPI};
