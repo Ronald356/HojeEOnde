@@ -27,6 +27,8 @@ const COR = {
   vermelhoMedio: '#F44336', // Vermelho padrão (Material Red 500)
   vermelhoClaro: '#EF5350', // Vermelho claro suave
   vermelhoMuitoClaro: '#FFCDD2', // Vermelho muito claro para backgrounds
+
+  corCCC: '#ccc',
 };
 
 export default COR;

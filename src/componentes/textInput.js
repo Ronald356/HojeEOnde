@@ -75,10 +75,7 @@ const ComponenteTextInput = ({
             style={styles.icone}
           />
         );
-      case 'senha':
-        return (
-          <Icone name="lock" size={20} color={COR.cinza} style={styles.icone} />
-        );
+
       default:
         return null;
     }
@@ -131,9 +128,7 @@ const ComponenteTextInput = ({
         <TextInput
           placeholder={placeholder}
           style={[styles.input, estiloInput]}
-          secureTextEntry={
-            mostrarSenhaPadrao ?? (tipo === 'senha' && !senhaVisivel)
-          }
+          secureTextEntry={tipo === 'senha' && !senhaVisivel}
           onChangeText={aoAlterarTexto}
           onFocus={aoFocar}
           onBlur={aoPerderFoco}
@@ -151,7 +146,7 @@ const ComponenteTextInput = ({
           textContentType={tipoConteudoTexto}
           {...outrasProps}
         />
-        {renderizarIconeDireita()}
+        <View style={styles.iconeDireita}>{renderizarIconeDireita()}</View>
       </View>
     </View>
   );
@@ -178,6 +173,12 @@ const styles = StyleSheet.create({
   },
   icone: {
     marginHorizontal: 5,
+  },
+  input: {
+    flex: 1,
+    fontSize: 14,
+    color: COR.preto,
+    ...FONTES.regular,
   },
 });
 

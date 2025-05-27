@@ -1,10 +1,9 @@
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import ModalAnimado from '../../componentes/primeiraTela/usuarioVaiLogar';
+import {pegarApiUrl} from '../../conexoesAPI/pegarUrlApi';
 
-import {pegarApiUrl} from '../conexoesAPI/pegarUrlApi';
-import ModalAnimado from '../componentes/primeiraTela/usuarioVaiLogar';
-
-export default function HomeScreen() {
+export default function HomeLogado() {
   useEffect(() => {
     pegarApiUrl().then(url => {
       console.warn('URL da API:', url);

@@ -44,8 +44,15 @@ const Ionicons = {
 
   iconeEmail: 'mail-open-outline',
 
-   iconeGoogle: 'logo-google',
-   iconeFacebook: 'logo-facebook',
+  iconeGoogle: 'logo-google',
+  iconeFacebook: 'logo-facebook',
+
+  relatorio: 'document-text-outline',
+
+  entrada: 'ticket-outline',
+  relogio: 'time-outline',
+  tag: 'pricetags-outline',
+  pin: 'pin',
 };
 
 export default Ionicons;

@@ -16,6 +16,10 @@ import ComponenteTextInput from '../textInput';
 import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
 import ModalPersonalizado from '../modalAlerta';
 import AcessibilidadeFoco from '../acessibilidade/acessibilidadeInfo';
+import {
+  enviarCodigo,
+  verificarEmailExistente,
+} from '../../conexoesAPI/chamarAPI';
 
 const TelaEmail = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -29,42 +33,46 @@ const TelaEmail = ({navigation}) => {
     );
   }
 
-  const handleProximo = () => {
+  async function checarEmail() {
+    try {
+      const resultado = await verificarEmailExistente(email);
+      if (resultado.exists) {
+        console.log('Email já cadastrado!');
+      } else {
+        console.log('Email disponível.');
+      }
+    } catch (err) {
+      console.error('Erro ao verificar email:', err);
+    }
+  }
+
+  const handleProximo = async () => {
     if (!email) {
       showToast('Informe um email válido.');
       return;
     }
 
-    // Dispara a requisição, mas não espera
-    fetch(
-      'https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/enviar-codigo',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email}),
-      },
-    )
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(
-            'Erro ao enviar o código. Verifique o e-mail e tente novamente.',
-          );
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Resposta da API:', data);
-        showToast('Código de verificação enviado para o e-mail!');
-      })
-      .catch(error => {
-        console.error('Erro ao enviar código:', error);
-        showToast(error.message || 'Erro inesperado. Tente novamente.');
-      });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showToast('Formato de email inválido.');
+      return;
+    }
 
-    // Navega imediatamente, sem esperar a resposta
-    navigation.navigate('Verificacao', {email});
+    const verificaEmail = await verificarEmailExistente(email);
+    if (verificaEmail.exists) {
+      return showToast('Email já cadastrado!');
+    } else {
+      console.log('Email disponível.');
+      navigation.navigate('Verificacao', {email});
+    }
+
+    try {
+      const data = await enviarCodigo(email);
+      console.log('Resposta da API:', data);
+      showToast('Código de verificação enviado para o e-mail!');
+    } catch (error) {
+      console.error('Erro ao enviar código:', error);
+    }
   };
 
   const handleVoltar = () => {

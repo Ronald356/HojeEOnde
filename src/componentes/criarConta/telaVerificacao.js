@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import COR from '../../constants/cor';
 import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
-import {validarAPI} from '../../conexoesAPI/chamarAPI';
+import {enviarCodigo, validarCodigo} from '../../conexoesAPI/chamarAPI';
 import ModalPersonalizado from '../modalAlerta';
 
 const TelaVerificacao = ({navigation, route}) => {
@@ -92,30 +92,21 @@ const TelaVerificacao = ({navigation, route}) => {
       return;
     }
 
-    const resultado = await validarAPI({
-      url: 'https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/validar-codigo',
-      body: {email, codigo: codigoCompleto},
-      onSuccessNavigate: {
-        name: 'Senha',
-        params: {email, codigo: codigoCompleto},
-      },
-      onErrorMessage: 'Código inválido ou expirado',
-      navigation,
-    });
-
-    if (!resultado) {
+    try {
+      await validarCodigo(email, codigoCompleto);
+      // Se chegar aqui, código válido
+      navigation.navigate('Senha', {email, codigo: codigoCompleto});
+    } catch (error) {
       animarShake();
+      // Mensagem de erro já exibida no toast pela função validarCodigo
     }
   };
 
   const reenviarCodigo = async () => {
     try {
-      const response = await validarAPI({
-        url: 'https://9a09-2804-14c-5bb8-8ac5-ddd2-7963-277b-f5d7.ngrok-free.app/auth/validar-codigo',
-        body: {email},
-      });
+      const data = await enviarCodigo(email);
 
-      if (!response.ok) {
+      if (!data.ok) {
         throw new Error(
           'Erro ao enviar o código. Verifique o e-mail e tente novamente.',
         );
@@ -132,11 +123,11 @@ const TelaVerificacao = ({navigation, route}) => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.voltar}>{'< Voltar'}</Text>
       </TouchableOpacity>
+
       <Text style={styles.titulo}>Digite o código de 6 dígitos</Text>
       <Text style={styles.subtitulo}>que enviamos para</Text>
       <Text style={styles.email}>{email}</Text>
 
-      {/* 3. Aplicar a animação no container dos inputs */}
       <Animated.View
         style={[
           styles.codigoContainer,
@@ -171,8 +162,13 @@ const TelaVerificacao = ({navigation, route}) => {
         </Pressable>
       )}
 
+      {/* Espaço flexível */}
+      <View style={{flex: 1}} />
+
+      {/* Botão fixo na parte inferior */}
       <BotaoFundoColorido text={'Continuar'} onPress={handleContinuar} />
 
+      {/* Modal de alerta */}
       {alerta && (
         <ModalPersonalizado
           visivel={!!alerta}

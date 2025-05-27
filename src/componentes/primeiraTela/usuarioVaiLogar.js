@@ -14,7 +14,7 @@ import BotaoApp from '../botao';
 import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
 import BotaoBordaColorida from '../botaoApp/botaoBordaColorida';
 import Titulo from '../textTitulo';
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import Ionicons from '../../constants/Ionicons';
 import Icone from 'react-native-vector-icons/Ionicons';
 import COR from '../../constants/cor';
@@ -48,6 +48,15 @@ export default function ModalAnimado({visible, onClose}) {
     navigation.navigate('Email');
   };
 
+  const entrarApp = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'HomeLogadoTabs'}],
+      }),
+    );
+  };
+
   return (
     <View>
       <ImagemApp
@@ -76,6 +85,8 @@ export default function ModalAnimado({visible, onClose}) {
               onPress={criarConta}
             />
             <BotaoBordaColorida text={'Criar conta'} onPress={criarConta} />
+
+            <BotaoBordaColorida text={'a'} onPress={entrarApp} />
           </View>
 
           <Text style={styles.subtitle}>Acessar com</Text>
