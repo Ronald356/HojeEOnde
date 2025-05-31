@@ -16,7 +16,13 @@ import ComponenteTextInput from '../textInput';
 import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
 import ModalPersonalizado from '../modalAlerta';
 import AcessibilidadeFoco from '../acessibilidade/acessibilidadeInfo';
-import {criaConta, criarConta, enviarCodigo} from '../../conexoesAPI/chamarAPI';
+import {
+  criaConta,
+  criarConta,
+  enviarCodigo,
+  loginUser,
+} from '../../conexoesAPI/chamarAPI';
+import {salvarToken} from '../../services/storage';
 
 const TelaSenha = ({route, navigation}) => {
   const {email} = route.params;
@@ -47,8 +53,15 @@ const TelaSenha = ({route, navigation}) => {
 
     try {
       const data = await criarConta(nome, email, senha);
+
       console.log('Resposta da API:', data);
-      navigation.navigate('HomeLogado');
+
+      const loginResponse = await loginUser(email, senha);
+
+      await salvarToken(loginResponse.token);
+
+      console.log('Resposta da API:', loginResponse);
+      navigation.navigate('HomeLogadoTabs');
       showToast('Código de verificação enviado para o e-mail!');
     } catch (error) {
       console.error('Erro ao enviar código:', error);

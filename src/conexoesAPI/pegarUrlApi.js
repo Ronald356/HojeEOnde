@@ -11,6 +11,6 @@ export async function pegarApiUrl() {
     }
   } else {
     console.log('caiu no else');
-    return 'https://bd6e-2804-14c-5bb8-8ac5-55f0-29ae-f812-6176.ngrok-free.app';
+    return 'https://382e-2804-14c-5bb8-8ac5-44ca-364e-74cb-a510.ngrok-free.app';
   }
 }

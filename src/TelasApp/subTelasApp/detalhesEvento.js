@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import {detalharEvento} from '../../conexoesAPI/chamarAPI';
 import MapView, {Callout, Marker} from 'react-native-maps';
@@ -23,16 +23,21 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import {FlatList} from 'react-native-gesture-handler';
 
 const width = Dimensions.get('window').width;
+const MAX_LENGTH = 200;
 
 export default function DetalhesEventoScreen() {
+  const navigation = useNavigation();
   const route = useRoute();
-  const {linkEvento, tituloEvento} = route.params;
+  const {linkEvento, tituloEvento, corDominante, corSecundaria, imagem} =
+    route.params;
 
   const [detalhes, setDetalhes] = useState(null);
   const [loading, setLoading] = useState(true);
   const [coords, setCoords] = useState(null);
   const [nomeInstagram, setNomeInstagram] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+  const [headerColor, setHeaderColor] = useState('#000'); // cor padrão
 
   const flatListRef = useRef(null);
 
@@ -52,6 +57,8 @@ export default function DetalhesEventoScreen() {
   }, [currentIndex]);
 
   useEffect(() => {
+    if (!detalhes || !detalhes.imagensUrls) return;
+
     const timer = setInterval(() => {
       let nextIndex = currentIndexRef.current + 1;
       if (nextIndex >= detalhes.imagensUrls.length) {
@@ -62,7 +69,7 @@ export default function DetalhesEventoScreen() {
     }, 4000);
 
     return () => clearInterval(timer);
-  }, [detalhes]);
+  }, [detalhes?.imagensUrls?.length]);
 
   const carregaDados = async () => {
     try {
@@ -96,15 +103,12 @@ export default function DetalhesEventoScreen() {
       ? detalhes.titulo.split('Localização')[1].split('Informações')[0].trim()
       : null;
 
-    console.log('Texto localização:', textoLocalizacao);
     if (!textoLocalizacao) return;
 
     const match = textoLocalizacao.match(/(Rua|Avenida|Travessa).*/);
     const endereco = match
       ? `${match[0]}, Belo Horizonte`
       : `${textoLocalizacao}, Belo Horizonte`;
-
-    console.log('Endereço limpo:', endereco);
 
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
       endereco,
@@ -137,7 +141,23 @@ export default function DetalhesEventoScreen() {
     );
   }
 
-  console.log(detalhes.redeSocial, 'aa');
+  // Pegando o texto e fazendo a limpeza
+  const textoCompleto = detalhes.titulo.includes('Descrição')
+    ? detalhes.titulo.split('Descrição')[1].split('Localização')[0].trim()
+    : 'Descrição não disponível.';
+
+  // Se não expandido e o texto for grande, corta
+  const textoExibido =
+    !expanded && textoCompleto.length > MAX_LENGTH
+      ? textoCompleto.substring(0, MAX_LENGTH) + '...'
+      : textoCompleto;
+
+  const imagensParaMostrar =
+    detalhes.imagensUrls.length > 0 ? detalhes.imagensUrls : imagem;
+
+  console.log(imagem, 'aaaa');
+
+  console.log(imagensParaMostrar);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -146,7 +166,7 @@ export default function DetalhesEventoScreen() {
       <View style={{position: 'relative'}}>
         <FlatList
           ref={flatListRef}
-          data={detalhes.imagensUrls}
+          data={imagensParaMostrar}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
@@ -154,7 +174,10 @@ export default function DetalhesEventoScreen() {
           snapToAlignment="start" // opcional
           decelerationRate="fast" // melhora a velocidade do snap
           onMomentumScrollEnd={event => {
-            const index = Math.floor(event.nativeEvent.contentOffset.x / width);
+            const index = Math.min(
+              Math.floor(event.nativeEvent.contentOffset.x / width),
+              detalhes.imagensUrls.length - 1,
+            );
             setCurrentIndex(index);
           }}
           renderItem={({item}) => (
@@ -184,7 +207,7 @@ export default function DetalhesEventoScreen() {
         </View>
       </View>
 
-      <View style={styles.secao}>
+      <View style={[styles.secao, {marginTop: 23}]}>
         <View
           style={{
             flexDirection: 'row',
@@ -194,21 +217,23 @@ export default function DetalhesEventoScreen() {
           <Ionicon
             name={Ionicons.relatorio}
             size={25}
-            color="purple"
+            color={corSecundaria ? corSecundaria : 'purple'}
             style={{marginRight: 8}}
           />
           <View style={{top: 2}}>
-            <Text style={styles.subtitulo}>Descrição</Text>
+            <Text style={[styles.subtitulo, {color: corDominante}]}>
+              Descrição
+            </Text>
           </View>
         </View>
-        <Text style={styles.texto}>
-          {detalhes.titulo.includes('Descrição')
-            ? detalhes.titulo
-                .split('Descrição')[1]
-                .split('Localização')[0]
-                .trim()
-            : 'Descrição não disponível.'}
-        </Text>
+        <Text style={styles.texto}>{textoExibido}</Text>
+        {textoCompleto.length > MAX_LENGTH && (
+          <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+            <Text style={{color: 'blue', marginTop: 4}}>
+              {expanded ? 'Ler menos' : 'Ler mais'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Seção: Localização */}
@@ -222,11 +247,13 @@ export default function DetalhesEventoScreen() {
           <Ionicon
             name={Ionicons.pin}
             size={23}
-            color="purple"
+            color={corSecundaria ? corSecundaria : 'purple'}
             style={{marginRight: 8}}
           />
           <View style={{top: 2}}>
-            <Text style={styles.subtitulo}>Localização</Text>
+            <Text style={[styles.subtitulo, {color: corDominante}]}>
+              Localização
+            </Text>
           </View>
         </View>
         <Text style={styles.texto}>
@@ -294,11 +321,13 @@ export default function DetalhesEventoScreen() {
             <Ionicon
               name={Ionicons.relogio}
               size={25}
-              color="purple"
+              color={corSecundaria ? corSecundaria : 'purple'}
               style={{marginRight: 8}}
             />
             <View style={{top: 2}}>
-              <Text style={styles.subtitulo}>Horários</Text>
+              <Text style={[styles.subtitulo, {color: corDominante}]}>
+                Horários
+              </Text>
             </View>
           </View>
           <Text style={styles.texto}>
@@ -328,11 +357,13 @@ export default function DetalhesEventoScreen() {
             <Ionicon
               name={Ionicons.entrada}
               size={25}
-              color="purple"
+              color={corSecundaria ? corSecundaria : 'purple'}
               style={{marginRight: 8}}
             />
             <View style={{top: 2}}>
-              <Text style={styles.subtitulo}>Entrada</Text>
+              <Text style={[styles.subtitulo, {color: corDominante}]}>
+                Entrada
+              </Text>
             </View>
           </View>
 
@@ -352,7 +383,6 @@ export default function DetalhesEventoScreen() {
         </View>
       </View>
 
-      {/* Seção: Categorias (tags) */}
       <View style={styles.secao}>
         <View
           style={{
@@ -363,11 +393,13 @@ export default function DetalhesEventoScreen() {
           <Ionicon
             name={Ionicons.tag}
             size={23}
-            color="purple"
+            color={corSecundaria ? corSecundaria : 'purple'}
             style={{marginRight: 8}}
           />
           <View style={{top: 2}}>
-            <Text style={styles.subtitulo}>Categoria</Text>
+            <Text style={[styles.subtitulo, {color: corDominante}]}>
+              Categoria
+            </Text>
           </View>
         </View>
         <View style={styles.tagsContainer}>
@@ -466,7 +498,7 @@ const styles = StyleSheet.create({
 
   subtitulo: {
     ...FONTES.bold,
-    color: COR.primaria,
+    color: COR.verdeLogo,
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 6,

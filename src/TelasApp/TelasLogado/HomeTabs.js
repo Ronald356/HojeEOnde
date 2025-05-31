@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons'; // ou use MaterialIcons
 import BuscarScreen from './buscar';
 import EventoScreen from './Evento';
 import PerfilScreen from './Perfil';
+import COR from '../../constants/cor';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,16 +21,20 @@ const TabIcon = ({route, focused, color, size}) => {
   } else if (route.name === 'Perfil') {
     iconName = focused ? 'person' : 'person-outline';
   }
-  return <Icon name={iconName} size={size} color={color} />;
+
+  const iconColor = focused ? COR.verdeLogo : color;
+  return <Icon name={iconName} size={size} color={iconColor} />;
 };
 
 const HomeLogadoTabs = () => {
   console.warn('HomeLogadoTabs rendered');
   return (
     <Tab.Navigator
-      initialRouteName="Evento"
+      initialRouteName="Home"
       screenOptions={({route}) => ({
         headerShown: false,
+        tabBarActiveTintColor: COR.verdeLogo,
+
         tabBarIcon: props => <TabIcon route={route} {...props} />,
       })}>
       <Tab.Screen name="Home" component={HomeLogado} />

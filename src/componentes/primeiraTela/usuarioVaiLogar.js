@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Modal,
   View,
@@ -27,6 +27,18 @@ const {height} = Dimensions.get('window');
 export default function ModalAnimado({visible, onClose}) {
   const slideAnim = useRef(new Animated.Value(height)).current;
   const navigation = useNavigation();
+  const [contadorToque, setContadorToque] = useState(0);
+
+  const handlePress = () => {
+    setContadorToque(prev => {
+      const novoValor = prev + 1;
+      if (novoValor >= 5) {
+        // Ação ao clicar 5 vezes
+        navigation.navigate('HomeLogadoTabs');
+      }
+      return novoValor;
+    });
+  };
 
   useEffect(() => {
     if (visible) {
@@ -48,6 +60,10 @@ export default function ModalAnimado({visible, onClose}) {
     navigation.navigate('Email');
   };
 
+  const logarNaConta = () => {
+    navigation.navigate('Login');
+  };
+
   const entrarApp = () => {
     navigation.dispatch(
       CommonActions.reset({
@@ -58,46 +74,47 @@ export default function ModalAnimado({visible, onClose}) {
   };
 
   return (
-    <View>
-      <ImagemApp
-        nomeImagem="logostory"
-        style={{width: '100%', height: '100%', bottom: 50}}
-      />
-      <Modal
-        transparent
-        visible={true}
-        animationType="none"
-        onRequestClose={onClose}>
-        <Pressable style={styles.overlay} onPress={onClose} />
+    <Pressable onPress={handlePress}>
+      <View>
+        <ImagemApp
+          nomeImagem="logostory"
+          style={{width: '100%', height: '100%', bottom: 50}}
+        />
 
-        <Animated.View
-          style={[
-            styles.container,
-            {
-              transform: [{translateY: slideAnim}],
-            },
-          ]}>
-          <View style={{marginTop: 10}}>
-            <AcessibilidadeFoco mensagem="Bem-vindo ao Hoje é Onde! Aqui você pode entrar com sua conta existente ou criar uma nova conta para começar a usar o aplicativo." />
+        <Modal
+          transparent
+          visible={true}
+          animationType="none"
+          onRequestClose={onClose}>
+          <Pressable style={styles.overlay} onPress={onClose} />
 
-            <BotaoFundoColorido
-              text={'Logar na minha conta'}
-              onPress={criarConta}
-            />
-            <BotaoBordaColorida text={'Criar conta'} onPress={criarConta} />
+          <Animated.View
+            style={[
+              styles.container,
+              {
+                transform: [{translateY: slideAnim}],
+              },
+            ]}>
+            <View style={{marginTop: 10}}>
+              <AcessibilidadeFoco mensagem="Bem-vindo ao Hoje é Onde! Aqui você pode entrar com sua conta existente ou criar uma nova conta para começar a usar o aplicativo." />
 
-            <BotaoBordaColorida text={'a'} onPress={entrarApp} />
-          </View>
+              <BotaoFundoColorido
+                text={'Logar na minha conta'}
+                onPress={logarNaConta}
+              />
+              <BotaoBordaColorida text={'Criar conta'} onPress={criarConta} />
+            </View>
 
-          <Text style={styles.subtitle}>Acessar com</Text>
+            <Text style={styles.subtitle}>Acessar com</Text>
 
-          <View style={styles.socialButtonsContainer}>
-            <GoogleLogin />
-            <FacebookLogin />
-          </View>
-        </Animated.View>
-      </Modal>
-    </View>
+            <View style={styles.socialButtonsContainer}>
+              <GoogleLogin />
+              <FacebookLogin />
+            </View>
+          </Animated.View>
+        </Modal>
+      </View>
+    </Pressable>
   );
 }
 

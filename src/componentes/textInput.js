@@ -66,15 +66,6 @@ const ComponenteTextInput = ({
             style={styles.icone}
           />
         );
-      case 'email':
-        return (
-          <Icone
-            name={Ionicons.iconeEmail}
-            size={20}
-            color={COR.cinza}
-            style={styles.icone}
-          />
-        );
 
       default:
         return null;
@@ -104,6 +95,21 @@ const ComponenteTextInput = ({
           testID="botao-olho">
           <Icone
             name={senhaVisivel ? 'eye-off' : 'eye'}
+            size={20}
+            color={COR.cinza}
+            style={styles.icone}
+          />
+        </TouchableOpacity>
+      );
+    }
+
+    if (tipo === 'email') {
+      return (
+        <TouchableOpacity
+          onPress={() => setSenhaVisivel(!senhaVisivel)}
+          testID="botao-olho">
+          <Icone
+            name={Ionicons.iconeEmail}
             size={20}
             color={COR.cinza}
             style={styles.icone}

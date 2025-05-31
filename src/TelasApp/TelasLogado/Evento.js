@@ -22,17 +22,50 @@ export default function EventoScreen() {
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
   const [resultado, setResultado] = useState('');
+  const [pagina, setPagina] = useState(1);
+  const [carregandoMais, setCarregandoMais] = useState(false);
+  const [fimLista, setFimLista] = useState(false);
+
   const navigation = useNavigation();
 
-  const buscarEventos = async () => {
+  const buscarEventos = async (paginaParaBuscar = 0) => {
     try {
-      const data = await verificarEventosDeBH();
-
-      setEventos(data);
+      const data = await verificarEventosDeBH(paginaParaBuscar);
+      if (paginaParaBuscar === 0) {
+        setEventos(data); // Primeira página, substitui
+      } else {
+        setEventos(prev => [...prev, ...data]); // Outras páginas, adiciona
+      }
     } catch (error) {
       console.error('Erro ao buscar eventos:', error);
     } finally {
       setLoading(false);
+      setCarregandoMais(false);
+    }
+  };
+
+  useEffect(() => {
+    buscarEventos(1);
+  }, []);
+
+  const carregarMais = async () => {
+    if (carregandoMais || fimLista) return; // evita múltiplas chamadas e quando não tem mais páginas
+    setCarregandoMais(true);
+
+    try {
+      const novaPagina = pagina + 1;
+      const data = await verificarEventosDeBH(novaPagina); // passando a página na chamada
+
+      if (data.length === 0) {
+        setFimLista(true); // sem mais dados
+      } else {
+        setEventos(prev => [...prev, ...data]);
+        setPagina(novaPagina);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCarregandoMais(false);
     }
   };
 
@@ -97,6 +130,9 @@ export default function EventoScreen() {
           navigation.navigate('DetalhesEvento', {
             linkEvento: item.linkEvento,
             tituloEvento: item.titulo,
+            corDominante: item.corDominante,
+            corSecundaria: item.corSecundaria,
+            imagem: item.imagem,
           })
         }>
         <Image source={{uri: item.imagem}} style={styles.imagem} />
@@ -121,18 +157,19 @@ export default function EventoScreen() {
         onChangeText={setBusca}
       />
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#00aaff" />
-      ) : eventosFiltrados.length === 0 ? (
-        <Text style={styles.mensagem}>Nenhum evento encontrado.</Text>
-      ) : (
-        <FlatList
-          data={eventosFiltrados}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderItem}
-          contentContainerStyle={styles.lista}
-        />
-      )}
+      <FlatList
+        data={eventosFiltrados}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        contentContainerStyle={styles.lista}
+        onEndReached={carregarMais}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={() =>
+          carregandoMais ? (
+            <ActivityIndicator size="small" color="#00aaff" />
+          ) : null
+        }
+      />
     </View>
   );
 }

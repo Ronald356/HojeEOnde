@@ -13,7 +13,7 @@ export default function HomeLogado() {
 
   return (
     <View style={styles.container}>
-      <ModalAnimado visible={true} />
+      {/* <ModalAnimado visible={true} /> */}
     </View>
   );
 }

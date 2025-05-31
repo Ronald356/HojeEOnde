@@ -9,11 +9,11 @@ import {
   Animated,
 } from 'react-native';
 import COR from '../../constants/cor';
-import BotaoFundoColorido from '../botaoApp/botaoFundoColorido';
 import {enviarCodigo, validarCodigo} from '../../conexoesAPI/chamarAPI';
-import ModalPersonalizado from '../modalAlerta';
+import BotaoFundoColorido from '../../componentes/botaoApp/botaoFundoColorido';
+import ModalPersonalizado from '../../componentes/modalAlerta';
 
-const TelaVerificacao = ({navigation, route}) => {
+const TelaVerificacaoRecuperarSenha = ({navigation, route}) => {
   const {email} = route.params;
   const [codigo, setCodigo] = useState(['', '', '', '', '', '']);
   const [tempo, setTempo] = useState(60);
@@ -93,7 +93,7 @@ const TelaVerificacao = ({navigation, route}) => {
     try {
       await validarCodigo(email, codigoCompleto);
       // Se chegar aqui, código válido
-      navigation.navigate('Senha', {email, codigo: codigoCompleto});
+      navigation.navigate('NovaSenhaUsuario', {email, codigo: codigoCompleto});
     } catch (error) {
       animarShake();
       // Mensagem de erro já exibida no toast pela função validarCodigo
@@ -242,4 +242,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TelaVerificacao;
+export default TelaVerificacaoRecuperarSenha;

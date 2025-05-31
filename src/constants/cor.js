@@ -18,6 +18,7 @@ const COR = {
 
   // Azuis
   azulEscuro: '#0D47A1', // Azul escuro forte
+  azul007AFF: '#007AFF',
   azulMedio: '#2196F3', // Azul padrão (Material Blue 500)
   azulClaro: '#64B5F6', // Azul claro suave
   azulMuitoClaro: '#BBDEFB', // Azul muito claro para backgrounds
@@ -29,6 +30,8 @@ const COR = {
   vermelhoMuitoClaro: '#FFCDD2', // Vermelho muito claro para backgrounds
 
   corCCC: '#ccc',
+
+  a: '#29120a',
 };
 
 export default COR;

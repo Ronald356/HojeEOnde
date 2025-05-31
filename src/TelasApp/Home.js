@@ -5,13 +5,6 @@ import {pegarApiUrl} from '../conexoesAPI/pegarUrlApi';
 import ModalAnimado from '../componentes/primeiraTela/usuarioVaiLogar';
 
 export default function HomeScreen() {
-  useEffect(() => {
-    pegarApiUrl().then(url => {
-      console.warn('URL da API:', url);
-      // Aqui você pode salvar essa URL no estado, contexto ou onde quiser usar depois
-    });
-  }, []); // [] significa que roda só uma vez quando o componente monta
-
   return (
     <View style={styles.container}>
       <ModalAnimado visible={true} />
